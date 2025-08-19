@@ -1,45 +1,70 @@
-# Pipeline de Processamento e Análise Automatizada
-Autor: **Bryan Ambrósio**
+# Automated Data Processing and Analysis Pipeline
+Author: **Bryan Ambrósio**
 
-Este repositório contém uma pipeline completa para processamento e análise de arquivos `.PLT`.  
-As etapas seguem da preparação dos dados brutos até a comparação entre sinais originais e reamostrados.  
+This repository contains a complete pipeline for processing and analyzing `.PLT` files.  
+`.PLT` files are simulation results obtianed via Organon software, wich is a software for simulatin power grid dinamics.
+The steps cover everything from raw data preparation to the comparison between original and resampled signals.  
 
 ---
 
 ## 0. `0-run_pipeline.py`
-Script mestre que executa todos os outros scripts em sequência (1 → 6), com pequeno intervalo entre eles.  
-Garante que o fluxo seja rodado de forma automática do início ao fim.
+Master script that runs all other scripts sequentially (1 → 6), with a short delay between them.  
+Ensures the entire pipeline is executed automatically from start to finish.
 
 ---
 
 ## 1. `1-rename_plt_headers.py`
-Lê arquivos `.PLT`, aplica o mapeamento de nomes de variáveis (a partir de Excel)  
-e gera versões com cabeçalhos atualizados.
+Reads `.PLT` files, applies variable name mapping (from Excel),  
+and generates new versions with updated headers.
 
 ---
 
 ## 2. `2-plt_to_parquet.py`
-Converte os `.PLT` renomeados para formato **Parquet**, mais eficiente para análise em Python.
+Converts the renamed `.PLT` files to **Parquet** format, which is more efficient for analysis in Python.
 
 ---
 
 ## 3. `3-data_visualization.py`
-Cria gráficos das principais variáveis agrupadas por prefixo  
-e salva em `data_visualization/`.
+Generates plots of the main variables grouped by prefix  
+and saves them in `data_visualization/`.
 
 ---
 
 ## 4. `4-sampling_rate_evaluation.py`
-Avalia a **taxa de amostragem** dos sinais, calculando o passo médio entre amostras (`deltaTempo`).
+Evaluates the **sampling rate** of the signals by calculating the average time step between samples (`deltaTempo`).
 
 ---
 
 ## 5. `5-interpol_resample_120Hz.py`
-Reamostra os sinais para **120 Hz** via interpolação linear,  
-gerando novos arquivos Parquet com grade temporal regular.
+Resamples the signals to **120 Hz** using linear interpolation,  
+producing new Parquet files with a regular time grid.
 
 ---
 
 ## 6. `6-compare_60hz_vs_120hz.py`
-Compara séries originais (~60 Hz) vs. reamostradas (120 Hz),  
-incluindo visualizações detalhadas próximas da contingência (~0,2 s).
+Compares original series (~60 Hz) with resampled ones (120 Hz),  
+including detailed visualizations around the contingency event (~0.2 s).
+
+---
+
+## Directory Structure
+
+When running the scripts, the following folder structure will be created automatically:
+
+- `data_raw/`  
+  Original `.PLT` files (raw input)
+
+- `data_renamed/`  
+  `.PLT` files with renamed headers
+
+- `data_parquet/`  
+  Files converted to Parquet format
+
+- `data_parquet_120Hz/`  
+  Parquet files resampled to 120 Hz
+
+- `data_visualization/`  
+  Generated plots from processed data
+
+- `60hz_vs_120hz/`  
+  Visual comparisons between original (≈60 Hz) and resampled (120 Hz) signals
